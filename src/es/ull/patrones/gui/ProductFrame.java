@@ -1,6 +1,6 @@
 package es.ull.patrones.gui;
 
-import es.ull.patrones.api.Product;
+import es.ull.patrones.model.Product;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

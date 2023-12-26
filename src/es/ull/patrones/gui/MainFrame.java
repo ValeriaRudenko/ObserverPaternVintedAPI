@@ -1,8 +1,9 @@
 package es.ull.patrones.gui;
 
-import es.ull.patrones.api.VintedApiSubject;
-import es.ull.patrones.observer.Observer;
-import es.ull.patrones.observer.PrintObserver;
+import es.ull.patrones.controller.VintedApiController;
+import es.ull.patrones.model.VintedApiModel;
+import es.ull.patrones.view.Observer;
+import es.ull.patrones.view.PrintObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +12,6 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
-import javax.swing.border.Border;
 
 public class MainFrame extends JFrame {
     // Panels
@@ -138,7 +138,8 @@ public class MainFrame extends JFrame {
     // Method to manage when the button is pressed
     Observer printObserver;
     private void onSearchButtonClick() {
-        VintedApiSubject vintedApiSubject = new VintedApiSubject();
+        VintedApiModel model = new VintedApiModel();
+        VintedApiController vintedApiSubject = new VintedApiController(model);
         if(printObserver!=null)
             printObserver.removepreviousFrame();
         printObserver = new PrintObserver();
