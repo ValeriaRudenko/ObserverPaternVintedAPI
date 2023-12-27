@@ -4,9 +4,7 @@ import es.ull.patrones.model.Brand;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
@@ -50,24 +48,5 @@ public class ItemsBarChart extends BarChart {
         }
 
         return dataset;
-    }
-
-    private void customizeRenderer(JFreeChart chart, List<Brand> brands) {
-        CategoryPlot plot = chart.getCategoryPlot();
-        BarRenderer renderer = (BarRenderer) plot.getRenderer();
-
-        // Configurar colores distintos para cada barra
-        for (int i = 0; i < brands.size(); i++) {
-            renderer.setSeriesPaint(i, getRandomColor());
-        }
-    }
-
-    private Color getRandomColor() {
-        // Generar un color aleatorio
-        return new Color(
-                (int) (Math.random() * 256),
-                (int) (Math.random() * 256),
-                (int) (Math.random() * 256)
-        );
     }
 }
