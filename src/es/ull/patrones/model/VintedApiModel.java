@@ -36,7 +36,7 @@ public class VintedApiModel {
       HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
       // Notifica a los observadores con los datos procesados
       data = response.body();
-      ParseJSON parser = new ParseJSON(data, favourites);
+      ProductJSONParser parser = new ProductJSONParser(data, favourites);
       notifyObservers(parser.getProductList());
 
     } catch (InterruptedException | IOException e) {

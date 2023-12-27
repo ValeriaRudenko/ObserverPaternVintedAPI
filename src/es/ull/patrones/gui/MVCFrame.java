@@ -1,6 +1,8 @@
 package es.ull.patrones.gui;
 
 import es.ull.patrones.controller.VintedApiController;
+import es.ull.patrones.model.Brand;
+import es.ull.patrones.model.BrandJSONParser;
 import es.ull.patrones.model.VintedApiModel;
 import es.ull.patrones.view.Observer;
 import es.ull.patrones.view.PrintObserver;
@@ -9,6 +11,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
 
 public class MVCFrame extends JFrame {
     // Panels
@@ -113,6 +122,31 @@ public class MVCFrame extends JFrame {
     // Method to manage when the button is pressed
     Observer printObserver;
     private void onSearchButtonClick() {
+        try {
+            URL url = new URL("https://raw.githubusercontent.com/0AlphaZero0/Vinted-data/main/DATA/brand.json");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder content = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                content.append(line);
+            }
+
+            reader.close();
+            connection.disconnect();
+
+            String jsonData = content.toString();
+
+            // Now you can use jsonData for parsing
+            BrandJSONParser parserTest = new BrandJSONParser(jsonData, Integer.parseInt(minNumberOfFavourites.getText()), Integer.parseInt(maxNumberOfFavourites.getText()), Integer.parseInt(minNumberOfItems.getText()), Integer.parseInt(maxNumberOfItems.getText()));
+            List<Brand> brands = parserTest.getBrandList();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         /**
         VintedApiModel model = new VintedApiModel();
         VintedApiController vintedApiSubject = new VintedApiController(model);
