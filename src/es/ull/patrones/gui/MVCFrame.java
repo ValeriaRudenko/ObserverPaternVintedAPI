@@ -139,8 +139,49 @@ public class MVCFrame extends JFrame {
 
             String jsonData = content.toString();
 
-            // Now you can use jsonData for parsing
-            BrandJSONParser parserTest = new BrandJSONParser(jsonData, Integer.parseInt(minNumberOfFavourites.getText()), Integer.parseInt(maxNumberOfFavourites.getText()), Integer.parseInt(minNumberOfItems.getText()), Integer.parseInt(maxNumberOfItems.getText()));
+            // Parse JSON file
+            // Check that the data is correct
+            if (!(minNumberOfFavourites.getText().isEmpty() && maxNumberOfFavourites.getText().isEmpty())) {
+                if (Integer.parseInt(minNumberOfFavourites.getText()) > Integer.parseInt(maxNumberOfFavourites.getText())) {
+                    throw new IllegalArgumentException("Incorrect input data");
+                }
+            }
+
+            if (!(minNumberOfItems.getText().isEmpty() && maxNumberOfItems.getText().isEmpty())) {
+                if (Integer.parseInt(minNumberOfItems.getText()) > Integer.parseInt(maxNumberOfItems.getText())) {
+                    throw new IllegalArgumentException("Incorrect input data");
+                }
+            }
+
+            int minFavourites = 0;
+            int maxFavourites = 0;
+            int minItems = 0;
+            int maxItems = 0;
+
+            if (minNumberOfFavourites.getText().isEmpty()) {
+                minFavourites = 0;
+            } else {
+                minFavourites = Integer.parseInt(minNumberOfFavourites.getText());
+            }
+
+            if (minNumberOfItems.getText().isEmpty()) {
+                minItems = 0;
+            } else {
+                minItems = Integer.parseInt(minNumberOfItems.getText());
+            }
+
+            if (maxNumberOfFavourites.getText().isEmpty()) {
+                maxFavourites = 1000000000;
+            } else {
+                maxFavourites = Integer.parseInt(maxNumberOfFavourites.getText());
+            }
+
+            if (maxNumberOfItems.getText().isEmpty()) {
+                maxItems = 1000000000;
+            } else {
+                maxFavourites = Integer.parseInt(maxNumberOfItems.getText());
+            }
+            BrandJSONParser parserTest = new BrandJSONParser(jsonData, minFavourites, maxFavourites, minItems, maxItems);
             List<Brand> brands = parserTest.getBrandList();
 
         } catch (IOException e) {
