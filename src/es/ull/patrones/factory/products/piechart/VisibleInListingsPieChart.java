@@ -1,15 +1,10 @@
-package es.ull.patrones.factory.products;
-
-import javax.swing.JPanel;
+package es.ull.patrones.factory.products.piechart;
 
 import es.ull.patrones.model.Brand;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.data.general.PieDataset;
-import org.jfree.ui.ApplicationFrame;
-import org.jfree.ui.RefineryUtilities;
 
 import java.awt.*;
 import java.util.List;

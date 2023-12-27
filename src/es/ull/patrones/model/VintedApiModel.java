@@ -1,5 +1,6 @@
 package es.ull.patrones.model;
 
+import es.ull.patrones.strategy.ProductJSONParser;
 import es.ull.patrones.view.Observer;
 import java.io.IOException;
 import java.net.URI;

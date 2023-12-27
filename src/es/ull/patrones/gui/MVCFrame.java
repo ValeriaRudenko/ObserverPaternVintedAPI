@@ -1,15 +1,15 @@
 package es.ull.patrones.gui;
 
-import es.ull.patrones.controller.VintedApiController;
-import es.ull.patrones.factory.products.AutenticityCheckPieChart;
-import es.ull.patrones.factory.products.LuxuryPieChart;
-import es.ull.patrones.factory.products.PieChart;
-import es.ull.patrones.factory.products.VisibleInListingsPieChart;
+import es.ull.patrones.factory.products.barchart.BarChart;
+import es.ull.patrones.factory.products.barchart.FavouritesBarChart;
+import es.ull.patrones.factory.products.barchart.ItemsBarChart;
+import es.ull.patrones.factory.products.piechart.AutenticityCheckPieChart;
+import es.ull.patrones.factory.products.piechart.LuxuryPieChart;
+import es.ull.patrones.factory.products.piechart.PieChart;
+import es.ull.patrones.factory.products.piechart.VisibleInListingsPieChart;
 import es.ull.patrones.model.Brand;
-import es.ull.patrones.model.BrandJSONParser;
-import es.ull.patrones.model.VintedApiModel;
+import es.ull.patrones.strategy.BrandJSONParser;
 import es.ull.patrones.view.Observer;
-import es.ull.patrones.view.PrintObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,7 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -158,19 +157,15 @@ public class MVCFrame extends JFrame {
             }
 
             int minFavourites = 0;
-            int maxFavourites = 0;
+            int maxFavourites;
             int minItems = 0;
-            int maxItems = 0;
+            int maxItems;
 
-            if (minNumberOfFavourites.getText().isEmpty()) {
-                minFavourites = 0;
-            } else {
+            if (!(minNumberOfFavourites.getText().isEmpty())) {
                 minFavourites = Integer.parseInt(minNumberOfFavourites.getText());
             }
 
-            if (minNumberOfItems.getText().isEmpty()) {
-                minItems = 0;
-            } else {
+            if (!(minNumberOfItems.getText().isEmpty())) {
                 minItems = Integer.parseInt(minNumberOfItems.getText());
             }
 
@@ -183,7 +178,7 @@ public class MVCFrame extends JFrame {
             if (maxNumberOfItems.getText().isEmpty()) {
                 maxItems = 1000000000;
             } else {
-                maxFavourites = Integer.parseInt(maxNumberOfItems.getText());
+                maxItems = Integer.parseInt(maxNumberOfItems.getText());
             }
             BrandJSONParser parserTest = new BrandJSONParser(jsonData, minFavourites, maxFavourites, minItems, maxItems);
             List<Brand> brands = parserTest.getBrandList();
@@ -210,6 +205,22 @@ public class MVCFrame extends JFrame {
                 autenticity.setLocationRelativeTo(null);
                 autenticity.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
                 autenticity.setVisible(true);
+            });
+
+            SwingUtilities.invokeLater(() -> {
+                BarChart noItems = new ItemsBarChart(brands);
+                noItems.setSize(800, 400);
+                noItems.setLocationRelativeTo(null);
+                noItems.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                noItems.setVisible(true);
+            });
+
+            SwingUtilities.invokeLater(() -> {
+                BarChart noFavourites = new FavouritesBarChart(brands);
+                noFavourites.setSize(800, 400);
+                noFavourites.setLocationRelativeTo(null);
+                noFavourites.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                noFavourites.setVisible(true);
             });
 
         } catch (IOException e) {

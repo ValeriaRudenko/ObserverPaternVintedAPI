@@ -1,5 +1,6 @@
-package es.ull.patrones.model;
+package es.ull.patrones.strategy;
 
+import es.ull.patrones.model.Brand;
 import es.ull.patrones.strategy.JSONParserStrategy;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public class BrandJSONParser implements JSONParserStrategy {
                     boolean isLuxury = brandJson.getBoolean("is_luxury");
                     Brand brand = new Brand(title, slug, favouriteCount, itemCount, isVisibleInListings, requiresAutenticityCheck, isLuxury);
                     brandList.add(brand);
-                    System.out.println(brand.getTitle());
+                    // System.out.println(brand.getTitle());
                 }
             }
         }

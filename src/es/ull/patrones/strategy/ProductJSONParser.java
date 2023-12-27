@@ -1,5 +1,6 @@
-package es.ull.patrones.model;
+package es.ull.patrones.strategy;
 
+import es.ull.patrones.model.Product;
 import es.ull.patrones.strategy.JSONParserStrategy;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,7 +18,7 @@ public class ProductJSONParser implements JSONParserStrategy {
 
   public void parse(String data, Object... parameters) {
     // Check if the parameters provided are correct
-    if (parameters.length < 2 || !(parameters[0] instanceof Integer)) {
+    if (parameters.length < 1 || !(parameters[0] instanceof Integer)) {
       throw new IllegalArgumentException("Invalid parameters");
     }
     int noOfFavouritesValue = (int) parameters[0];

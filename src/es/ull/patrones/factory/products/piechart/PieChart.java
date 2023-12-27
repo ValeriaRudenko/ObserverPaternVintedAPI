@@ -1,4 +1,4 @@
-package es.ull.patrones.factory.products;
+package es.ull.patrones.factory.products.piechart;
 
 import javax.swing.*;
 
