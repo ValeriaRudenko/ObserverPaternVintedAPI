@@ -1,6 +1,10 @@
 package es.ull.patrones.gui;
 
 import es.ull.patrones.controller.VintedApiController;
+import es.ull.patrones.factory.products.AutenticityCheckPieChart;
+import es.ull.patrones.factory.products.LuxuryPieChart;
+import es.ull.patrones.factory.products.PieChart;
+import es.ull.patrones.factory.products.VisibleInListingsPieChart;
 import es.ull.patrones.model.Brand;
 import es.ull.patrones.model.BrandJSONParser;
 import es.ull.patrones.model.VintedApiModel;
@@ -183,6 +187,30 @@ public class MVCFrame extends JFrame {
             }
             BrandJSONParser parserTest = new BrandJSONParser(jsonData, minFavourites, maxFavourites, minItems, maxItems);
             List<Brand> brands = parserTest.getBrandList();
+
+            SwingUtilities.invokeLater(() -> {
+                PieChart visible = new VisibleInListingsPieChart(brands);
+                visible.setSize(800, 400);
+                visible.setLocationRelativeTo(null);
+                visible.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                visible.setVisible(true);
+            });
+
+            SwingUtilities.invokeLater(() -> {
+                PieChart luxury = new LuxuryPieChart(brands);
+                luxury.setSize(800, 400);
+                luxury.setLocationRelativeTo(null);
+                luxury.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                luxury.setVisible(true);
+            });
+
+            SwingUtilities.invokeLater(() -> {
+                PieChart autenticity = new AutenticityCheckPieChart(brands);
+                autenticity.setSize(800, 400);
+                autenticity.setLocationRelativeTo(null);
+                autenticity.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                autenticity.setVisible(true);
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
