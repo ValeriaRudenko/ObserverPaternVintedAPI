@@ -122,10 +122,11 @@ public class MVCFrame extends JFrame {
         // We assure the main frame is visible
         this.setVisible(true);
     }
-    // Method to manage when the button is pressed
-    Observer printObserver;
+
+    // When the search button gets pressed...
     private void onSearchButtonClick() {
         try {
+            // We extract the data from the new JSON
             URL url = new URL("https://raw.githubusercontent.com/0AlphaZero0/Vinted-data/main/DATA/brand.json");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -142,25 +143,27 @@ public class MVCFrame extends JFrame {
 
             String jsonData = content.toString();
 
-            // Parse JSON file
-            // Check that the data is correct
+            // Check that the input data is correct
+            // An exception will be thrown when the min value is greater than max value
             if (!(minNumberOfFavourites.getText().isEmpty() && maxNumberOfFavourites.getText().isEmpty())) {
                 if (Integer.parseInt(minNumberOfFavourites.getText()) > Integer.parseInt(maxNumberOfFavourites.getText())) {
                     throw new IllegalArgumentException("Incorrect input data");
                 }
             }
-
             if (!(minNumberOfItems.getText().isEmpty() && maxNumberOfItems.getText().isEmpty())) {
                 if (Integer.parseInt(minNumberOfItems.getText()) > Integer.parseInt(maxNumberOfItems.getText())) {
                     throw new IllegalArgumentException("Incorrect input data");
                 }
             }
 
+            // It will be acceptable if the fields of min and max are empty
+            // That would make the min be 0, and the max be 1000000000
             int minFavourites = 0;
             int maxFavourites;
             int minItems = 0;
             int maxItems;
 
+            // Min numbers
             if (!(minNumberOfFavourites.getText().isEmpty())) {
                 minFavourites = Integer.parseInt(minNumberOfFavourites.getText());
             }
@@ -169,6 +172,7 @@ public class MVCFrame extends JFrame {
                 minItems = Integer.parseInt(minNumberOfItems.getText());
             }
 
+            // Max numbers
             if (maxNumberOfFavourites.getText().isEmpty()) {
                 maxFavourites = 1000000000;
             } else {
@@ -180,9 +184,19 @@ public class MVCFrame extends JFrame {
             } else {
                 maxItems = Integer.parseInt(maxNumberOfItems.getText());
             }
+
+            // We parse the JSON file
             BrandJSONParser parserTest = new BrandJSONParser(jsonData, minFavourites, maxFavourites, minItems, maxItems);
             List<Brand> brands = parserTest.getBrandList();
 
+            /**
+             * TODO: Add some way for the user to choose the charts that will be shown in the scoreboard
+             * TODO: Use the factories!
+             * TODO: Use the Scoreboard class
+            */
+
+            // We show the charts
+            // This is just a test to check the charts work properly
             SwingUtilities.invokeLater(() -> {
                 PieChart visible = new VisibleInListingsPieChart(brands);
                 visible.setSize(800, 400);
@@ -227,32 +241,5 @@ public class MVCFrame extends JFrame {
             e.printStackTrace();
         }
 
-        /**
-        VintedApiModel model = new VintedApiModel();
-        VintedApiController vintedApiSubject = new VintedApiController(model);
-        if(printObserver!=null)
-            printObserver.removepreviousFrame();
-        printObserver = new PrintObserver();
-        // Input fields values
-        String keywordValue = keyword.getText();
-        int noOfPageValue = (int) noOfpage.getSelectedItem();
-        String countryValue = (String) country.getSelectedItem();
-        int minPriceValue = Integer.parseInt(minPrice.getText());
-        int maxPriceValue = Integer.parseInt(maxPrice.getText());
-        int noOfFavouritesValue = (int) noOfFavourites.getSelectedItem();
-        if (minPriceValue > maxPriceValue) {
-            JOptionPane.showMessageDialog(this,"ERROR DE PRECIO");
-        }
-        vintedApiSubject.addObserver(printObserver);
-        vintedApiSubject.fetchData(noOfPageValue, keywordValue, minPriceValue, maxPriceValue, noOfFavouritesValue);
-        // We search the items with the search criteria
-        String results = performSearch(keywordValue, noOfPageValue, countryValue, minPriceValue, maxPriceValue, noOfFavouritesValue);
-        */
-    }
-
-    // Method to perform search with parameters
-    private String performSearch(String keyword, int noOfPage, String country, int minPrice, int maxPrice, int noOfFavourites) {
-        return String.format("Búsqueda con:\nKeyword: %s\nNo. of Page: %d\nCountry: %s\nMin. Price: %s\nMax. Price: %s\nNo. of Favourites: %d",
-                keyword, noOfPage, country, minPrice, maxPrice, noOfFavourites);
     }
 }
