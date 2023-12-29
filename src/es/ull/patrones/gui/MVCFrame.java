@@ -9,7 +9,6 @@ import es.ull.patrones.factory.products.piechart.PieChart;
 import es.ull.patrones.factory.products.piechart.VisibleInListingsPieChart;
 import es.ull.patrones.model.Brand;
 import es.ull.patrones.strategy.BrandJSONParser;
-import es.ull.patrones.view.Observer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,6 +46,13 @@ public class MVCFrame extends JFrame {
     // Buttons
     private JButton searchButton;
 
+    // Checkboxes
+    private JCheckBox visibleInListingsCheckbox;
+    private JCheckBox luxuryCheckbox;
+    private JCheckBox authenticityCheckbox;
+    private JCheckBox itemsBarChartCheckbox;
+    private JCheckBox favouritesBarChartCheckbox;
+
     // Constructor method
     public MVCFrame() {
         // Configuration of the main frame
@@ -82,9 +88,7 @@ public class MVCFrame extends JFrame {
 
         // Search labels
         minNoOfFavouritesLabel = new JLabel("No. of favourites (min - max): ");
-        // maxNumberOfFavouritesLabel;
         minItemCountLabel = new JLabel("No. of items (min - max): ");
-        // maxItemCountLabel;
 
         // Search text fields
         minNumberOfFavourites = new JTextField(10);
@@ -93,18 +97,22 @@ public class MVCFrame extends JFrame {
         maxNumberOfItems = new JTextField(10);
 
         // Search button
-        // When pressed, the program will use the Vinted API
         searchButton = new JButton("Search items");
-        // An action listener should be defined here
         searchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Clic event
                 onSearchButtonClick();
             }
         });
-        // Add stuff to the panels and main frame
-        // Filters panel
+
+        // Checkboxes
+        visibleInListingsCheckbox = new JCheckBox("Visible in Listings");
+        luxuryCheckbox = new JCheckBox("Luxury");
+        authenticityCheckbox = new JCheckBox("Authenticity Check");
+        itemsBarChartCheckbox = new JCheckBox("Items Bar Chart");
+        favouritesBarChartCheckbox = new JCheckBox("Favourites Bar Chart");
+
+        // Add components to the panels and main frame
         filtersPanel.add(minNoOfFavouritesLabel);
         filtersPanel.add(new JLabel());
         filtersPanel.add(minNumberOfFavourites);
@@ -112,21 +120,23 @@ public class MVCFrame extends JFrame {
         filtersPanel.add(minItemCountLabel);
         filtersPanel.add(minNumberOfItems);
         filtersPanel.add(maxNumberOfItems);
-        // Buttons panel
+        filtersPanel.add(visibleInListingsCheckbox);
+        filtersPanel.add(luxuryCheckbox);
+        filtersPanel.add(authenticityCheckbox);
+        filtersPanel.add(itemsBarChartCheckbox);
+        filtersPanel.add(favouritesBarChartCheckbox);
+
         buttonsPanel.add(searchButton);
-        // Main frame
+
         this.add(logoPanel, BorderLayout.NORTH);
         this.add(filtersPanel, BorderLayout.CENTER);
         this.add(buttonsPanel, BorderLayout.SOUTH);
 
-        // We assure the main frame is visible
         this.setVisible(true);
     }
 
-    // When the search button gets pressed...
     private void onSearchButtonClick() {
         try {
-            // We extract the data from the new JSON
             URL url = new URL("https://raw.githubusercontent.com/0AlphaZero0/Vinted-data/main/DATA/brand.json");
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -143,8 +153,6 @@ public class MVCFrame extends JFrame {
 
             String jsonData = content.toString();
 
-            // Check that the input data is correct
-            // An exception will be thrown when the min value is greater than max value
             if (!(minNumberOfFavourites.getText().isEmpty() && maxNumberOfFavourites.getText().isEmpty())) {
                 if (Integer.parseInt(minNumberOfFavourites.getText()) > Integer.parseInt(maxNumberOfFavourites.getText())) {
                     throw new IllegalArgumentException("Incorrect input data");
@@ -156,14 +164,11 @@ public class MVCFrame extends JFrame {
                 }
             }
 
-            // It will be acceptable if the fields of min and max are empty
-            // That would make the min be 0, and the max be 1000000000
             int minFavourites = 0;
             int maxFavourites;
             int minItems = 0;
             int maxItems;
 
-            // Min numbers
             if (!(minNumberOfFavourites.getText().isEmpty())) {
                 minFavourites = Integer.parseInt(minNumberOfFavourites.getText());
             }
@@ -172,7 +177,6 @@ public class MVCFrame extends JFrame {
                 minItems = Integer.parseInt(minNumberOfItems.getText());
             }
 
-            // Max numbers
             if (maxNumberOfFavourites.getText().isEmpty()) {
                 maxFavourites = 1000000000;
             } else {
@@ -185,7 +189,6 @@ public class MVCFrame extends JFrame {
                 maxItems = Integer.parseInt(maxNumberOfItems.getText());
             }
 
-            // We parse the JSON file
             BrandJSONParser parserTest = new BrandJSONParser(jsonData, minFavourites, maxFavourites, minItems, maxItems);
             List<Brand> brands = parserTest.getBrandList();
 
@@ -197,49 +200,62 @@ public class MVCFrame extends JFrame {
 
             // We show the charts
             // This is just a test to check the charts work properly
-            SwingUtilities.invokeLater(() -> {
-                PieChart visible = new VisibleInListingsPieChart(brands);
-                visible.setSize(800, 400);
-                visible.setLocationRelativeTo(null);
-                visible.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                visible.setVisible(true);
-            });
+            if (visibleInListingsCheckbox.isSelected()) {
+                SwingUtilities.invokeLater(() -> {
+                    PieChart visible = new VisibleInListingsPieChart(brands);
+                    visible.setSize(800, 400);
+                    visible.setLocationRelativeTo(null);
+                    visible.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    visible.setVisible(true);
+                });
+            }
 
-            SwingUtilities.invokeLater(() -> {
-                PieChart luxury = new LuxuryPieChart(brands);
-                luxury.setSize(800, 400);
-                luxury.setLocationRelativeTo(null);
-                luxury.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                luxury.setVisible(true);
-            });
+            if (luxuryCheckbox.isSelected()) {
+                SwingUtilities.invokeLater(() -> {
+                    PieChart luxury = new LuxuryPieChart(brands);
+                    luxury.setSize(800, 400);
+                    luxury.setLocationRelativeTo(null);
+                    luxury.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    luxury.setVisible(true);
+                });
+            }
 
-            SwingUtilities.invokeLater(() -> {
-                PieChart autenticity = new AutenticityCheckPieChart(brands);
-                autenticity.setSize(800, 400);
-                autenticity.setLocationRelativeTo(null);
-                autenticity.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                autenticity.setVisible(true);
-            });
+            if (authenticityCheckbox.isSelected()) {
+                SwingUtilities.invokeLater(() -> {
+                    PieChart authenticity = new AutenticityCheckPieChart(brands);
+                    authenticity.setSize(800, 400);
+                    authenticity.setLocationRelativeTo(null);
+                    authenticity.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    authenticity.setVisible(true);
+                });
+            }
 
-            SwingUtilities.invokeLater(() -> {
-                BarChart noItems = new ItemsBarChart(brands);
-                noItems.setSize(800, 400);
-                noItems.setLocationRelativeTo(null);
-                noItems.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                noItems.setVisible(true);
-            });
+            if (itemsBarChartCheckbox.isSelected()) {
+                SwingUtilities.invokeLater(() -> {
+                    BarChart noItems = new ItemsBarChart(brands);
+                    noItems.setSize(800, 400);
+                    noItems.setLocationRelativeTo(null);
+                    noItems.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    noItems.setVisible(true);
+                });
+            }
 
-            SwingUtilities.invokeLater(() -> {
-                BarChart noFavourites = new FavouritesBarChart(brands);
-                noFavourites.setSize(800, 400);
-                noFavourites.setLocationRelativeTo(null);
-                noFavourites.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                noFavourites.setVisible(true);
-            });
+            if (favouritesBarChartCheckbox.isSelected()) {
+                SwingUtilities.invokeLater(() -> {
+                    BarChart noFavourites = new FavouritesBarChart(brands);
+                    noFavourites.setSize(800, 400);
+                    noFavourites.setLocationRelativeTo(null);
+                    noFavourites.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                    noFavourites.setVisible(true);
+                });
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new MVCFrame());
     }
 }
