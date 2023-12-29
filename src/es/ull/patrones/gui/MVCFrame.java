@@ -1,5 +1,8 @@
 package es.ull.patrones.gui;
 
+import es.ull.patrones.factory.factories.BarChartFactory;
+import es.ull.patrones.factory.factories.ChartFactory;
+import es.ull.patrones.factory.factories.PieChartFactory;
 import es.ull.patrones.factory.products.barchart.BarChart;
 import es.ull.patrones.factory.products.barchart.FavouritesBarChart;
 import es.ull.patrones.factory.products.barchart.ItemsBarChart;
@@ -174,28 +177,23 @@ public class MVCFrame extends JFrame {
             Scoreboard scoreboard = new Scoreboard();
 
             if (visibleInListingsCheckbox.isSelected()) {
-                JPanel visible = new VisibleInListingsPieChart(brands);
-                scoreboard.addChart(visible);
+                addChart(scoreboard, brands, "visibleInListings");
             }
 
             if (luxuryCheckbox.isSelected()) {
-                JPanel luxury = new LuxuryPieChart(brands);
-                scoreboard.addChart(luxury);
+                addChart(scoreboard, brands, "luxury");
             }
 
             if (authenticityCheckbox.isSelected()) {
-                JPanel authenticity = new AutenticityCheckPieChart(brands);
-                scoreboard.addChart(authenticity);
+                addChart(scoreboard, brands, "authenticity");
             }
 
             if (itemsBarChartCheckbox.isSelected()) {
-                JPanel noItems = new ItemsBarChart(brands);
-                scoreboard.addChart(noItems);
+                addChart(scoreboard, brands, "items");
             }
 
             if (favouritesBarChartCheckbox.isSelected()) {
-                JPanel noFavourites = new FavouritesBarChart(brands);
-                scoreboard.addChart(noFavourites);
+                addChart(scoreboard, brands, "favourites");
             }
 
             SwingUtilities.invokeLater(() -> {
@@ -208,6 +206,19 @@ public class MVCFrame extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+    private void addChart(Scoreboard scoreboard, List<Brand> brands, String type) {
+        ChartFactory factory;
+        switch (type) {
+            case "visibleInListings" -> factory = new PieChartFactory();
+            case "luxury", "authenticity" -> factory = new PieChartFactory();
+            case "items", "favourites" -> factory = new BarChartFactory();
+            default -> throw new IllegalArgumentException("Invalid chart type: " + type);
+        }
+
+        JPanel chart = factory.createChart(brands, type);
+        scoreboard.addChart(chart);
     }
 }
 

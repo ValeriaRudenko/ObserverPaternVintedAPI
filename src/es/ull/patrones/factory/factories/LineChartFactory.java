@@ -18,6 +18,4 @@ public class LineChartFactory implements ChartFactory {
         }
         return null;
     }
-
-
 }
