@@ -22,52 +22,37 @@ import java.net.URL;
 import java.util.List;
 
 public class MVCFrame extends JFrame {
-    // Panels
-    private JPanel filtersPanel; // Panel to place the filter fields
-    private JPanel buttonsPanel; // Panel to place the buttons
+    private JPanel filtersPanel;
+    private JPanel buttonsPanel;
     private JPanel logoPanel;
 
-    // Labels
     private JLabel minNoOfFavouritesLabel;
-    private JLabel maxNumberOfFavouritesLabel;
     private JLabel minItemCountLabel;
-    private JLabel maxItemCountLabel;
-    // private JLabel isVisibleInListings;
-    // private JLabel requiresAutenticityCheck;
-    // private JLabel isLuxuryCheck;
-    private JLabel vintedLogo;
 
-    // Input fields
     private JTextField minNumberOfFavourites;
     private JTextField maxNumberOfFavourites;
     private JTextField minNumberOfItems;
     private JTextField maxNumberOfItems;
 
-    // Buttons
     private JButton searchButton;
 
-    // Checkboxes
     private JCheckBox visibleInListingsCheckbox;
     private JCheckBox luxuryCheckbox;
     private JCheckBox authenticityCheckbox;
     private JCheckBox itemsBarChartCheckbox;
     private JCheckBox favouritesBarChartCheckbox;
 
-    // Constructor method
     public MVCFrame() {
-        // Configuration of the main frame
         this.setSize(400, 300);
         this.getContentPane().setLayout(new BorderLayout());
         this.setBackground(new Color(190, 245, 255));
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setTitle("Vinted Scorecard");
 
-        // Icon of the main frame
         ImageIcon vintedIcon = new javax.swing.ImageIcon("images/vinted_icon.png");
         Image vintedIconIcon = vintedIcon.getImage();
         this.setIconImage(vintedIconIcon);
 
-        // Configure panel stuff
         filtersPanel = new JPanel();
         filtersPanel.setBackground(new Color(190, 245, 255));
         filtersPanel.setLayout(new GridLayout(7, 2));
@@ -78,25 +63,21 @@ public class MVCFrame extends JFrame {
         logoPanel.setLayout(new BorderLayout());
         logoPanel.setBackground(new Color(190, 245, 255));
 
-        // Add logo to the label that will be on the top of the window
         ImageIcon logo = new ImageIcon("images/Vinted_Logo.png");
         Image originalIcon = logo.getImage();
         Image escalatedLogo = originalIcon.getScaledInstance(75, 25, Image.SCALE_SMOOTH);
         logo = new ImageIcon(escalatedLogo);
-        vintedLogo = new JLabel(logo);
+        JLabel vintedLogo = new JLabel(logo);
         logoPanel.add(vintedLogo, BorderLayout.CENTER);
 
-        // Search labels
         minNoOfFavouritesLabel = new JLabel("No. of favourites (min - max): ");
         minItemCountLabel = new JLabel("No. of items (min - max): ");
 
-        // Search text fields
         minNumberOfFavourites = new JTextField(10);
         maxNumberOfFavourites = new JTextField(10);
         minNumberOfItems = new JTextField(10);
         maxNumberOfItems = new JTextField(10);
 
-        // Search button
         searchButton = new JButton("Search items");
         searchButton.addActionListener(new ActionListener() {
             @Override
@@ -105,14 +86,12 @@ public class MVCFrame extends JFrame {
             }
         });
 
-        // Checkboxes
         visibleInListingsCheckbox = new JCheckBox("Visible in Listings");
         luxuryCheckbox = new JCheckBox("Luxury");
         authenticityCheckbox = new JCheckBox("Authenticity Check");
         itemsBarChartCheckbox = new JCheckBox("Items Bar Chart");
         favouritesBarChartCheckbox = new JCheckBox("Favourites Bar Chart");
 
-        // Add components to the panels and main frame
         filtersPanel.add(minNoOfFavouritesLabel);
         filtersPanel.add(new JLabel());
         filtersPanel.add(minNumberOfFavourites);
@@ -192,70 +171,44 @@ public class MVCFrame extends JFrame {
             BrandJSONParser parserTest = new BrandJSONParser(jsonData, minFavourites, maxFavourites, minItems, maxItems);
             List<Brand> brands = parserTest.getBrandList();
 
-            /**
-             * TODO: Add some way for the user to choose the charts that will be shown in the scoreboard
-             * TODO: Use the factories!
-             * TODO: Use the Scoreboard class
-            */
+            Scoreboard scoreboard = new Scoreboard();
 
-            // We show the charts
-            // This is just a test to check the charts work properly
             if (visibleInListingsCheckbox.isSelected()) {
-                SwingUtilities.invokeLater(() -> {
-                    PieChart visible = new VisibleInListingsPieChart(brands);
-                    visible.setSize(800, 400);
-                    visible.setLocationRelativeTo(null);
-                    visible.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    visible.setVisible(true);
-                });
+                JPanel visible = new VisibleInListingsPieChart(brands);
+                scoreboard.addChart(visible);
             }
 
             if (luxuryCheckbox.isSelected()) {
-                SwingUtilities.invokeLater(() -> {
-                    PieChart luxury = new LuxuryPieChart(brands);
-                    luxury.setSize(800, 400);
-                    luxury.setLocationRelativeTo(null);
-                    luxury.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    luxury.setVisible(true);
-                });
+                JPanel luxury = new LuxuryPieChart(brands);
+                scoreboard.addChart(luxury);
             }
 
             if (authenticityCheckbox.isSelected()) {
-                SwingUtilities.invokeLater(() -> {
-                    PieChart authenticity = new AutenticityCheckPieChart(brands);
-                    authenticity.setSize(800, 400);
-                    authenticity.setLocationRelativeTo(null);
-                    authenticity.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    authenticity.setVisible(true);
-                });
+                JPanel authenticity = new AutenticityCheckPieChart(brands);
+                scoreboard.addChart(authenticity);
             }
 
             if (itemsBarChartCheckbox.isSelected()) {
-                SwingUtilities.invokeLater(() -> {
-                    BarChart noItems = new ItemsBarChart(brands);
-                    noItems.setSize(800, 400);
-                    noItems.setLocationRelativeTo(null);
-                    noItems.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    noItems.setVisible(true);
-                });
+                JPanel noItems = new ItemsBarChart(brands);
+                scoreboard.addChart(noItems);
             }
 
             if (favouritesBarChartCheckbox.isSelected()) {
-                SwingUtilities.invokeLater(() -> {
-                    BarChart noFavourites = new FavouritesBarChart(brands);
-                    noFavourites.setSize(800, 400);
-                    noFavourites.setLocationRelativeTo(null);
-                    noFavourites.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-                    noFavourites.setVisible(true);
-                });
+                JPanel noFavourites = new FavouritesBarChart(brands);
+                scoreboard.addChart(noFavourites);
             }
+
+            SwingUtilities.invokeLater(() -> {
+                scoreboard.setSize(1200, 800);
+                scoreboard.setLocationRelativeTo(null);
+                scoreboard.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+                scoreboard.setVisible(true);
+            });
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new MVCFrame());
-    }
 }
+
+

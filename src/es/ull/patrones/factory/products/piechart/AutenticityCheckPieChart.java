@@ -27,7 +27,7 @@ public class AutenticityCheckPieChart extends PieChart {
         // Crear un panel de gráfico
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(370, 370));
-        setContentPane(chartPanel);
+        add(chartPanel);
     }
 
     private DefaultPieDataset createDataset(List<Brand> brands) {
