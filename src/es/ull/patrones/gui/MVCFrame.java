@@ -1,12 +1,6 @@
 package es.ull.patrones.gui;
 
-import es.ull.patrones.factory.products.barchart.BarChart;
-import es.ull.patrones.factory.products.barchart.FavouritesBarChart;
-import es.ull.patrones.factory.products.barchart.ItemsBarChart;
-import es.ull.patrones.factory.products.piechart.AutenticityCheckPieChart;
-import es.ull.patrones.factory.products.piechart.LuxuryPieChart;
-import es.ull.patrones.factory.products.piechart.PieChart;
-import es.ull.patrones.factory.products.piechart.VisibleInListingsPieChart;
+import es.ull.patrones.factory.factories.*;
 import es.ull.patrones.model.Brand;
 import es.ull.patrones.strategy.BrandJSONParser;
 
@@ -20,27 +14,28 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 public class MVCFrame extends JFrame {
-    private JPanel filtersPanel;
-    private JPanel buttonsPanel;
-    private JPanel logoPanel;
+    final private JPanel filtersPanel;
+    final private JPanel buttonsPanel;
+    final private JPanel logoPanel;
 
-    private JLabel minNoOfFavouritesLabel;
-    private JLabel minItemCountLabel;
+    final private JLabel minNoOfFavouritesLabel;
+    final private JLabel minItemCountLabel;
 
-    private JTextField minNumberOfFavourites;
-    private JTextField maxNumberOfFavourites;
-    private JTextField minNumberOfItems;
-    private JTextField maxNumberOfItems;
+    final private JTextField minNumberOfFavourites;
+    final private JTextField maxNumberOfFavourites;
+    final private JTextField minNumberOfItems;
+    final private JTextField maxNumberOfItems;
 
-    private JButton searchButton;
+    final private JButton searchButton;
 
-    private JCheckBox visibleInListingsCheckbox;
-    private JCheckBox luxuryCheckbox;
-    private JCheckBox authenticityCheckbox;
-    private JCheckBox itemsBarChartCheckbox;
-    private JCheckBox favouritesBarChartCheckbox;
+    final private JCheckBox visibleInListingsCheckbox;
+    final private JCheckBox luxuryCheckbox;
+    final private JCheckBox authenticityCheckbox;
+    final private JCheckBox itemsBarChartCheckbox;
+    final private JCheckBox favouritesBarChartCheckbox;
 
     public MVCFrame() {
         this.setSize(400, 300);
@@ -173,29 +168,23 @@ public class MVCFrame extends JFrame {
 
             Scoreboard scoreboard = new Scoreboard();
 
-            if (visibleInListingsCheckbox.isSelected()) {
-                JPanel visible = new VisibleInListingsPieChart(brands);
-                scoreboard.addChart(visible);
-            }
+            // Create a map for checkboxes and their corresponding types
+            Map<JCheckBox, String> checkboxTypeMap = Map.of(
+                    visibleInListingsCheckbox, "visibleInListings",
+                    luxuryCheckbox, "luxury",
+                    authenticityCheckbox, "authenticity",
+                    itemsBarChartCheckbox, "items",
+                    favouritesBarChartCheckbox, "favourites"
+            );
 
-            if (luxuryCheckbox.isSelected()) {
-                JPanel luxury = new LuxuryPieChart(brands);
-                scoreboard.addChart(luxury);
-            }
+            // Iterate through the checkboxes and add charts
+            for (Map.Entry<JCheckBox, String> entry : checkboxTypeMap.entrySet()) {
+                JCheckBox checkbox = entry.getKey();
+                String type = entry.getValue();
 
-            if (authenticityCheckbox.isSelected()) {
-                JPanel authenticity = new AutenticityCheckPieChart(brands);
-                scoreboard.addChart(authenticity);
-            }
-
-            if (itemsBarChartCheckbox.isSelected()) {
-                JPanel noItems = new ItemsBarChart(brands);
-                scoreboard.addChart(noItems);
-            }
-
-            if (favouritesBarChartCheckbox.isSelected()) {
-                JPanel noFavourites = new FavouritesBarChart(brands);
-                scoreboard.addChart(noFavourites);
+                if (checkbox.isSelected()) {
+                    addChart(scoreboard, brands, type);
+                }
             }
 
             SwingUtilities.invokeLater(() -> {
@@ -208,7 +197,20 @@ public class MVCFrame extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
+
+    private void addChart(Scoreboard scoreboard, List<Brand> brands, String type) {
+        ChartFactory factory;
+        switch (type) {
+            case "visibleInListings" -> factory = new PieChartFactory();
+            case "luxury", "authenticity" -> factory = new PieChartFactory();
+            case "items", "favourites" -> factory = new BarChartFactory();
+            default -> throw new IllegalArgumentException("Invalid chart type: " + type);
+        }
+
+        JPanel chart = factory.createChart(brands, type);
+        scoreboard.addChart(chart);
+    }
+
 }
-
-
