@@ -8,10 +8,12 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class ItemsBarChart extends BarChart {
+
     public ItemsBarChart(List<Brand> brands) {
         super("Items Bar Chart");
 
@@ -36,7 +38,11 @@ public class ItemsBarChart extends BarChart {
         // Crear un panel de gráfico
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setPreferredSize(new Dimension(800, 400));
-        setContentPane(chartPanel);
+
+        // Creating a JPanel and adding the ChartPanel to it
+        JPanel panel = new JPanel();
+        panel.add(chartPanel);
+        add(panel);
     }
 
     private CategoryDataset createDataset(List<Brand> brands) {

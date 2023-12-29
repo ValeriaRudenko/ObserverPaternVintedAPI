@@ -9,10 +9,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public abstract class BarChart extends JFrame {
+public abstract class BarChart extends JPanel {
+
     public BarChart(String s) {
-        super(s);
+
     }
+
     void customizeRenderer(JFreeChart chart, List<Brand> brands) {
         CategoryPlot plot = chart.getCategoryPlot();
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
