@@ -1,5 +1,6 @@
 package es.ull.patrones.view;
 
+import es.ull.patrones.gui.ProductChart;
 import es.ull.patrones.model.Product;
 import es.ull.patrones.gui.ProductFrame;
 import javax.swing.*;
@@ -11,6 +12,7 @@ public class PrintObserver implements Observer {
   public void update(List<Product> productList) {
     SwingUtilities.invokeLater(() -> {
       productFrame = new ProductFrame(productList);
+      ProductChart.createAndShowCombinedChart(productList);
     });
   }
   public void removepreviousFrame(){
