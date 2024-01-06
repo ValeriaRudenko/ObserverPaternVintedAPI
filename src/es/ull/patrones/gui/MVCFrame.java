@@ -2,6 +2,7 @@ package es.ull.patrones.gui;
 
 import es.ull.patrones.factory.factories.*;
 import es.ull.patrones.model.Brand;
+import es.ull.patrones.observer.BrandObserver;
 import es.ull.patrones.strategy.BrandJSONParser;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-public class MVCFrame extends JFrame {
+public class MVCFrame extends JFrame implements BrandObserver {
     final private JPanel filtersPanel;
     final private JPanel buttonsPanel;
     final private JPanel logoPanel;
@@ -36,6 +37,8 @@ public class MVCFrame extends JFrame {
     final private JCheckBox authenticityCheckbox;
     final private JCheckBox itemsBarChartCheckbox;
     final private JCheckBox favouritesBarChartCheckbox;
+
+    private JTextArea messageArea;
 
     public MVCFrame() {
         this.setSize(400, 300);
@@ -57,6 +60,11 @@ public class MVCFrame extends JFrame {
         logoPanel.setSize(150, 100);
         logoPanel.setLayout(new BorderLayout());
         logoPanel.setBackground(new Color(190, 245, 255));
+        messageArea = new JTextArea();
+        messageArea.setEditable(false);
+
+        JScrollPane scrollPane = new JScrollPane(messageArea);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         ImageIcon logo = new ImageIcon("images/Vinted_Logo.png");
         Image originalIcon = logo.getImage();
@@ -86,6 +94,8 @@ public class MVCFrame extends JFrame {
         authenticityCheckbox = new JCheckBox("Authenticity Check");
         itemsBarChartCheckbox = new JCheckBox("Items Bar Chart");
         favouritesBarChartCheckbox = new JCheckBox("Favourites Bar Chart");
+        JPanel messagePanel = new JPanel(new BorderLayout());
+
 
         filtersPanel.add(minNoOfFavouritesLabel);
         filtersPanel.add(new JLabel());
@@ -99,12 +109,16 @@ public class MVCFrame extends JFrame {
         filtersPanel.add(authenticityCheckbox);
         filtersPanel.add(itemsBarChartCheckbox);
         filtersPanel.add(favouritesBarChartCheckbox);
+        messagePanel.add(new JLabel("Messages: "), BorderLayout.NORTH);
+        messagePanel.add(scrollPane, BorderLayout.CENTER);
 
         buttonsPanel.add(searchButton);
 
         this.add(logoPanel, BorderLayout.NORTH);
         this.add(filtersPanel, BorderLayout.CENTER);
         this.add(buttonsPanel, BorderLayout.SOUTH);
+        this.add(messagePanel, BorderLayout.EAST);
+
 
         this.setVisible(true);
     }
@@ -167,6 +181,9 @@ public class MVCFrame extends JFrame {
             List<Brand> brands = parserTest.getBrandList();
 
             Scoreboard scoreboard = new Scoreboard();
+            //System.out.println("Nuevo Scoreboard Creado con Opciones: " + getUserOptions());
+            scoreboard.registerObserver(this);
+            scoreboard.setUserOptions(getUserOptions());
 
             // Create a map for checkboxes and their corresponding types
             Map<JCheckBox, String> checkboxTypeMap = Map.of(
@@ -211,6 +228,36 @@ public class MVCFrame extends JFrame {
 
         JPanel chart = factory.createChart(brands, type);
         scoreboard.addChart(chart);
+    }
+
+    private String getUserOptions() {
+
+        String options = "Favourites: " +
+                minNumberOfFavourites.getText() +
+                " - " +
+                maxNumberOfFavourites.getText() +
+                ", Items: " +
+                minNumberOfItems.getText() +
+                " - " +
+                maxNumberOfItems.getText() +
+                ", Visible: " +
+                visibleInListingsCheckbox.isSelected() +
+                ", Luxury: " +
+                luxuryCheckbox.isSelected() +
+                ", Authenticity: " +
+                authenticityCheckbox.isSelected() +
+                ", Items Chart: " +
+                itemsBarChartCheckbox.isSelected() +
+                ", Favourites Chart: " +
+                favouritesBarChartCheckbox.isSelected();
+
+        return options;
+    }
+
+    @Override
+    public void updateOptions(String userOptions) {
+        messageArea.append("User's options: " + userOptions + "\n");
+        messageArea.setCaretPosition(messageArea.getDocument().getLength());
     }
 
 }
